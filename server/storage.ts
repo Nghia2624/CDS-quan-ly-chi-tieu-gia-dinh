@@ -61,9 +61,14 @@ export class DatabaseStorage implements IStorage {
 
   // Expense operations
   async createExpense(expense: InsertExpense & { userId: string; familyId?: string }): Promise<Expense> {
+    const expenseData = {
+      ...expense,
+      amount: expense.amount.toString(), // Convert number to string for decimal field
+    };
+    
     const [newExpense] = await db
       .insert(expenses)
-      .values(expense)
+      .values(expenseData)
       .returning();
     return newExpense;
   }
