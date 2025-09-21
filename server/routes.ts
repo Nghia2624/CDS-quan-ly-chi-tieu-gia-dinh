@@ -14,8 +14,21 @@ import bcrypt from "bcrypt";
 
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key-change-in-production";
 
+// Extend Express Request type
+declare global {
+  namespace Express {
+    interface Request {
+      user?: {
+        userId: string;
+        email: string;
+        familyId: string;
+      };
+    }
+  }
+}
+
 // Middleware for JWT authentication
-function authenticateToken(req: any, res: any, next: any) {
+function authenticateToken(req: express.Request, res: express.Response, next: express.NextFunction) {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 
@@ -128,6 +141,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const validatedData = insertExpenseSchema.parse(req.body);
       const user = req.user;
 
+      if (!user) {
+        return res.status(401).json({ error: "User not authenticated" });
+      }
+
       // Use AI to categorize expense if category not provided
       let category = validatedData.category;
       let aiConfidence = 0;
@@ -159,6 +176,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/expenses", authenticateToken, async (req, res) => {
     try {
       const user = req.user;
+
+      if (!user) {
+        return res.status(401).json({ error: "User not authenticated" });
+      }
+
       const limit = parseInt(req.query.limit as string) || 50;
       
       const expenses = await storage.getExpenses(user.familyId, limit);
@@ -173,6 +195,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/stats", authenticateToken, async (req, res) => {
     try {
       const user = req.user;
+
+      if (!user) {
+        return res.status(401).json({ error: "User not authenticated" });
+      }
+
       const stats = await storage.getExpenseStats(user.familyId);
       
       // Generate AI insights
@@ -190,6 +217,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const validatedData = insertChatMessageSchema.parse(req.body);
       const user = req.user;
+
+      if (!user) {
+        return res.status(401).json({ error: "User not authenticated" });
+      }
 
       // Get recent expenses for context
       const recentExpenses = await storage.getExpenses(user.familyId, 20);
@@ -233,6 +264,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/chat/history", authenticateToken, async (req, res) => {
     try {
       const user = req.user;
+
+      if (!user) {
+        return res.status(401).json({ error: "User not authenticated" });
+      }
+
       const limit = parseInt(req.query.limit as string) || 50;
       
       const messages = await storage.getChatHistory(user.familyId, limit);

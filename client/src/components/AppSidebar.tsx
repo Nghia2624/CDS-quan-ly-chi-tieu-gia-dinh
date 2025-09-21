@@ -1,4 +1,4 @@
-import { Home, Plus, MessageCircle, BarChart3, Settings, Users } from "lucide-react";
+import { Home, Plus, MessageCircle, BarChart3, Settings, Users, LogOut } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -14,6 +14,8 @@ import {
 import { Link, useLocation } from "wouter";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { authService } from "@/lib/auth";
 
 const menuItems = [
   {
@@ -50,6 +52,12 @@ const menuItems = [
 
 export function AppSidebar() {
   const [location] = useLocation();
+  const user = authService.getUser();
+
+  const handleLogout = () => {
+    authService.clearAuth();
+    window.location.reload(); // Refresh to show login page
+  };
 
   return (
     <Sidebar>
@@ -60,7 +68,9 @@ export function AppSidebar() {
           </div>
           <div>
             <h1 className="font-semibold text-sm">Quản lý Chi tiêu</h1>
-            <p className="text-xs text-muted-foreground">Gia đình Nguyễn</p>
+            <p className="text-xs text-muted-foreground">
+              {user?.fullName ? `Gia đình ${user.fullName.split(' ')[0]}` : 'Gia đình'}
+            </p>
           </div>
         </div>
       </SidebarHeader>
@@ -119,20 +129,28 @@ export function AppSidebar() {
       </SidebarContent>
 
       <SidebarFooter>
-        <div className="flex items-center gap-3 px-3 py-2">
-          <Avatar className="h-8 w-8">
-            <AvatarFallback className="text-xs">BA</AvatarFallback>
-          </Avatar>
-          <div className="flex-1 min-w-0">
-            <p className="text-xs font-medium truncate">Bố An</p>
-            <p className="text-xs text-muted-foreground">Đang hoạt động</p>
-          </div>
-          <div className="flex items-center gap-1">
-            <Avatar className="h-6 w-6">
-              <AvatarFallback className="text-xs">MH</AvatarFallback>
+        <div className="px-3 py-2 space-y-2">
+          <div className="flex items-center gap-3">
+            <Avatar className="h-8 w-8">
+              <AvatarFallback className="text-xs">
+                {user?.fullName?.split(' ').map(n => n[0]).join('').toUpperCase() || 'U'}
+              </AvatarFallback>
             </Avatar>
-            <span className="text-xs text-muted-foreground">+1</span>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-medium truncate">{user?.fullName || 'User'}</p>
+              <p className="text-xs text-muted-foreground capitalize">{user?.role || 'member'}</p>
+            </div>
           </div>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={handleLogout}
+            className="w-full justify-start text-xs"
+            data-testid="button-logout"
+          >
+            <LogOut className="h-3 w-3 mr-2" />
+            Đăng xuất
+          </Button>
         </div>
       </SidebarFooter>
     </Sidebar>

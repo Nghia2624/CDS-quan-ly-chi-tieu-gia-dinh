@@ -14,6 +14,7 @@ import ChatPage from "@/pages/ChatPage";
 import StatsPage from "@/pages/StatsPage";
 import AuthPage from "@/pages/AuthPage";
 import NotFound from "@/pages/not-found";
+import { authService } from "@/lib/auth";
 
 function Router() {
   return (
@@ -44,7 +45,7 @@ function Router() {
 }
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(true); // todo: remove mock - set to false for real auth
+  const [isAuthenticated, setIsAuthenticated] = useState(() => authService.isAuthenticated());
 
   const style = {
     "--sidebar-width": "20rem",

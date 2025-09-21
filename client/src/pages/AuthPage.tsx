@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { LoginForm } from "@/components/LoginForm";
 import { SignupForm } from "@/components/SignupForm";
+import { authService } from "@/lib/auth";
 
 interface AuthPageProps {
   onAuthenticated?: () => void;
@@ -9,22 +10,30 @@ interface AuthPageProps {
 export default function AuthPage({ onAuthenticated }: AuthPageProps) {
   const [isLogin, setIsLogin] = useState(true);
 
-  const handleLogin = (credentials: { email: string; password: string }) => {
-    console.log('Login successful:', credentials);
-    // todo: remove mock functionality - handle real authentication
-    onAuthenticated?.();
+  const handleLogin = async (credentials: { email: string; password: string }) => {
+    try {
+      await authService.login(credentials.email, credentials.password);
+      onAuthenticated?.();
+    } catch (error: any) {
+      console.error('Login failed:', error.message);
+      // Handle error - you might want to show a toast here
+    }
   };
 
-  const handleSignup = (userData: {
+  const handleSignup = async (userData: {
     email: string;
     phone: string;
     password: string;
     fullName: string;
     role: string;
   }) => {
-    console.log('Signup successful:', userData);
-    // todo: remove mock functionality - handle real registration
-    onAuthenticated?.();
+    try {
+      await authService.register(userData);
+      onAuthenticated?.();
+    } catch (error: any) {
+      console.error('Signup failed:', error.message);
+      // Handle error - you might want to show a toast here
+    }
   };
 
   return (

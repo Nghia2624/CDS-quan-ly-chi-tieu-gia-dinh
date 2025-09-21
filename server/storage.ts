@@ -19,7 +19,7 @@ export interface IStorage {
   createUser(user: InsertUser): Promise<User>;
   
   // Expense operations
-  createExpense(expense: InsertExpense & { userId: string; familyId?: string }): Promise<Expense>;
+  createExpense(expense: InsertExpense & { userId: string; familyId?: string; aiConfidence?: number }): Promise<Expense>;
   getExpenses(familyId: string, limit?: number): Promise<Expense[]>;
   getExpensesByCategory(familyId: string, category: string): Promise<Expense[]>;
   getExpenseStats(familyId: string): Promise<{
@@ -60,7 +60,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Expense operations
-  async createExpense(expense: InsertExpense & { userId: string; familyId?: string }): Promise<Expense> {
+  async createExpense(expense: InsertExpense & { userId: string; familyId?: string; aiConfidence?: number }): Promise<Expense> {
     const expenseData = {
       ...expense,
       amount: expense.amount.toString(), // Convert number to string for decimal field
@@ -68,7 +68,7 @@ export class DatabaseStorage implements IStorage {
     
     const [newExpense] = await db
       .insert(expenses)
-      .values(expenseData)
+      .values([expenseData])
       .returning();
     return newExpense;
   }
