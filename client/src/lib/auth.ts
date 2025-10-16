@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react';
+
 interface User {
   id: string;
   email: string;
@@ -44,6 +46,11 @@ class AuthService {
       throw new Error(data.error || 'Login failed');
     }
 
+    // Check if user is a child - children cannot login
+    if (data.user.role === 'child') {
+      throw new Error('Con cái không thể đăng nhập. Chỉ bố mẹ mới có thể sử dụng hệ thống.');
+    }
+
     this.setAuth(data.token, data.user);
     return data;
   }
@@ -80,6 +87,10 @@ class AuthService {
     localStorage.setItem('auth_user', JSON.stringify(user));
   }
 
+  logout() {
+    this.clearAuth();
+  }
+
   clearAuth() {
     this.token = null;
     this.user = null;
@@ -99,10 +110,67 @@ class AuthService {
     return !!this.token && !!this.user;
   }
 
-  getAuthHeaders() {
-    return this.token ? { Authorization: `Bearer ${this.token}` } : {};
+  getAuthHeaders(): Record<string, string> {
+    const headers: Record<string, string> = {};
+    if (this.token) {
+      headers.Authorization = `Bearer ${this.token}`;
+    }
+    return headers;
   }
 }
 
 export const authService = new AuthService();
 export type { User, AuthResponse };
+
+// React hook for auth
+export function useAuth() {
+  const [user, setUser] = useState<User | null>(authService.getUser());
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    // Only check auth status once on mount
+    setUser(authService.getUser());
+  }, []);
+
+  const login = async (email: string, password: string) => {
+    setIsLoading(true);
+    try {
+      const result = await authService.login(email, password);
+      setUser(authService.getUser());
+      return result;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const logout = () => {
+    authService.logout();
+    setUser(null);
+  };
+
+  const register = async (email: string, password: string, fullName: string) => {
+    setIsLoading(true);
+    try {
+      const result = await authService.register({
+        email,
+        password,
+        fullName,
+        phone: '',
+        role: 'father'
+      });
+      setUser(authService.getUser());
+      return result;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return {
+    user,
+    isLoading,
+    isAuthenticated: !!user,
+    login,
+    logout,
+    register,
+  };
+}

@@ -9,9 +9,9 @@
 
 <div align="center">
     <p align="center">
-        <img src="docs/projects/K16/aiotlab_logo.png" alt="AIoTLab Logo" width="170"/>
-        <img src="docs/projects/K16/fitdnu_logo.png" alt="FIT DNU Logo" width="180"/>
-        <img src="docs/projects/K16/dnu_logo.png" alt="DaiNam University Logo" width="200"/>
+        <img src="./projects/K16/aiotlab_logo.png" alt="AIoTLab Logo" width="170"/>
+        <img src="./projects/K16/fitdnu_logo.png" alt="FIT DNU Logo" width="180"/>
+        <img src="./projects/K16/dnu_logo.png" alt="DaiNam University Logo" width="200"/>
     </p>
 
 [![AIoTLab](https://img.shields.io/badge/AIoTLab-28a745?style=for-the-badge\&logo=facebook\&logoColor=white)](https://www.facebook.com/DNUAIoTLab)
@@ -117,7 +117,7 @@ FinanceFlow được thiết kế theo mô hình **Microservices** với các th
 
 ## 3. 📸 Hình ảnh Demo
 
-> **Lưu ý**: Tất cả ảnh demo được lưu trữ tại thư mục `projects/anhduan/`
+> **Lưu ý**: Tất cả ảnh demo được lưu trữ tại thư mục `./projects/anhduan/`
 
 ---
 
@@ -126,7 +126,7 @@ FinanceFlow được thiết kế theo mô hình **Microservices** với các th
 ### 🚪 Giao diện Đăng nhập
 
 <div align="center">
-  <img src="projects/anhduan/dangnhap.png" width="600"/>
+  <img src="./projects/anhduan/dangnhap.png" width="600"/>
   <p><em>Giao diện đăng nhập với validation và bảo mật cao</em></p>
 </div>
 
@@ -137,7 +137,7 @@ FinanceFlow được thiết kế theo mô hình **Microservices** với các th
 ### 🎯 Trang chủ Dashboard
 
 <div align="center">
-  <img src="projects/anhduan/tongquan.png" width="800"/>
+  <img src="./projects/anhduan/tongquan.png" width="800"/>
   <p><em>Dashboard chính với AI insights, thống kê chi tiêu và giao diện hiện đại</em></p>
 </div>
 
@@ -148,7 +148,7 @@ FinanceFlow được thiết kế theo mô hình **Microservices** với các th
 ### 📝 Form Thêm Chi tiêu
 
 <div align="center">
-  <img src="projects/anhduan/themchitieu.png" width="700"/>
+  <img src="./projects/anhduan/themchitieu.png" width="700"/>
   <p><em>Form thêm chi tiêu với AI phân loại tự động và validation thông minh</em></p>
 </div>
 
@@ -159,7 +159,7 @@ FinanceFlow được thiết kế theo mô hình **Microservices** với các th
 ### 💬 Giao diện Chat
 
 <div align="center">
-  <img src="projects/anhduan/chatai.png" width="800"/>
+  <img src="./projects/anhduan/chatai.png" width="800"/>
   <p><em>Chat với AI tư vấn tài chính thông minh, hỗ trợ quản lý ngân sách gia đình</em></p>
 </div>
 
@@ -170,7 +170,7 @@ FinanceFlow được thiết kế theo mô hình **Microservices** với các th
 ### 📈 Thống kê Chi tiêu
 
 <div align="center">
-  <img src="projects/anhduan/thongke.png" width="800"/>
+  <img src="./projects/anhduan/thongke.png" width="800"/>
   <p><em>Biểu đồ chi tiêu theo danh mục và xu hướng tháng với AI phân tích</em></p>
 </div>
 
@@ -182,7 +182,7 @@ FinanceFlow được thiết kế theo mô hình **Microservices** với các th
 ### 🏠 Quản lý Thành viên Gia đình
 
 <div align="center">
-  <img src="projects/anhduan/bangthongkechitiet.png" width="800"/>
+  <img src="./projects/anhduan/bangthongkechitiet.png" width="800"/>
   <p><em>Quản lý thành viên gia đình với vai trò bố, mẹ, con và ngân sách cá nhân</em></p>
 </div>
 
@@ -193,14 +193,14 @@ FinanceFlow được thiết kế theo mô hình **Microservices** với các th
 ### 🔧 Trang Cài đặt
 
 <div align="center">
-  <img src="projects/anhduan/caidat.png" width="800"/>
+  <img src="./projects/anhduan/caidat.png" width="800"/>
   <p><em>Giao diện cài đặt hệ thống và cấu hình người dùng</em></p>
 </div>
 
 ### 📤 Xuất Dữ liệu
 
 <div align="center">
-  <img src="projects/anhduan/xuatduleu.png" width="800"/>
+  <img src="./projects/anhduan/xuatduleu.png" width="800"/>
   <p><em>Chức năng xuất dữ liệu chi tiêu ra Excel, PDF để lưu trữ và báo cáo</em></p>
 </div>
 

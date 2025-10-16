@@ -68,7 +68,10 @@ export async function setupVite(app: Express, server: Server) {
 }
 
 export function serveStatic(app: Express) {
-  const distPath = path.resolve(import.meta.dirname, "public");
+  const distPath = path.resolve(import.meta.dirname, "..", "dist", "public");
+  
+  console.log("Serving static files from:", distPath);
+  console.log("Directory exists:", fs.existsSync(distPath));
 
   if (!fs.existsSync(distPath)) {
     throw new Error(
@@ -80,6 +83,7 @@ export function serveStatic(app: Express) {
 
   // fall through to index.html if the file doesn't exist
   app.use("*", (_req, res) => {
+    console.log("Serving index.html for:", _req.originalUrl);
     res.sendFile(path.resolve(distPath, "index.html"));
   });
 }
