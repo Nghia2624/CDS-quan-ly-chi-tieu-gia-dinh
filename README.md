@@ -4,7 +4,8 @@
     </a>
 </h2>
 <h2 align="center">
-   ỨNG DỤNG CHUYỂN ĐỔI SỐ TRONG VIỆC QUẢN LÝ CHI TIÊU CHO GIA ĐÌNH 
+   ỨNG DỤNG CHUYỂN ĐỔI SỐ TRONG VIỆC 
+    QUẢN LÝ CHI TIÊU CHO GIA ĐÌNH 
 </h2>
 
 <div align="center">
