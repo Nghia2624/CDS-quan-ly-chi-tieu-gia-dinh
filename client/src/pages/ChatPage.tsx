@@ -165,9 +165,14 @@ export default function ChatPage() {
                 : msg
             )
           );
+          
+          // Only invalidate queries after typing is complete
+          queryClient.invalidateQueries({ queryKey: ['chat-messages', selectedSession] });
         });
+      } else {
+        // No AI response, just invalidate queries
+        queryClient.invalidateQueries({ queryKey: ['chat-messages', selectedSession] });
       }
-      queryClient.invalidateQueries({ queryKey: ['chat-messages', selectedSession] });
       setMessage("");
       setIsTyping(false);
     },
@@ -195,7 +200,7 @@ export default function ChatPage() {
         setIsTypingMessage(false);
         callback();
       }
-    }, 20); // 20ms per character for smoother typing
+    }, 30); // 30ms per character for more visible typing effect
   };
 
   const handleSend = async () => {
@@ -446,9 +451,16 @@ export default function ChatPage() {
                           )}
 
                           <div className="text-sm leading-relaxed break-words overflow-wrap-anywhere">
-                            {msg.messageType === 'ai' && isTypingMessage && msg.message === '' ? (
-                              <p className="mb-2 last:mb-0">{typingMessage}</p>
-                            ) : (
+                          {msg.messageType === 'ai' && isTypingMessage && msg.id === messages[messages.length - 1]?.id ? (
+                            typingMessage.split('\n').map((line, i) => (
+                              <p key={i} className="mb-2 last:mb-0">
+                                {line || '\u00A0'}
+                                {i === typingMessage.split('\n').length - 1 && (
+                                  <span className="inline-block w-0.5 h-4 bg-blue-500 ml-1 animate-pulse"></span>
+                                )}
+                              </p>
+                            ))
+                          ) : (
                               msg.message.split('\n').map((line, i) => (
                                 <p key={i} className="mb-2 last:mb-0">{line || '\u00A0'}</p>
                               ))
@@ -488,10 +500,17 @@ export default function ChatPage() {
                           <Bot className="h-5 w-5" />
                         </AvatarFallback>
                       </Avatar>
-                      <div className="bg-white border border-gray-200 rounded-2xl p-4 max-w-[75%] mr-auto shadow-sm">
+                      <div className="bg-gradient-to-br from-white to-blue-50 border border-gray-200 rounded-2xl p-4 max-w-[75%] mr-auto shadow-lg hover:shadow-xl transition-all duration-300">
                         <div className="text-sm leading-relaxed break-words overflow-wrap-anywhere">
                           {isTypingMessage ? (
-                            <p className="mb-2 last:mb-0">{typingMessage}</p>
+                            typingMessage.split('\n').map((line, i) => (
+                              <p key={i} className="mb-2 last:mb-0">
+                                {line || '\u00A0'}
+                                {i === typingMessage.split('\n').length - 1 && (
+                                  <span className="inline-block w-0.5 h-4 bg-blue-500 ml-1 animate-pulse"></span>
+                                )}
+                              </p>
+                            ))
                           ) : (
                             <div className="flex items-center gap-2">
                               <div className="flex space-x-1">

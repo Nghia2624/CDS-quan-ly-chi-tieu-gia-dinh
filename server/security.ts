@@ -106,7 +106,7 @@ export const corsOptions = {
     if (!origin) return callback(null, true);
     
     const allowedOrigins = [
-      'http://localhost:3000',
+      'http://localhost:5000',
       'http://localhost:5173',
       'https://financeflow.app',
       'https://www.financeflow.app'

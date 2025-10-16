@@ -10,7 +10,7 @@ services:
       - PORT=5000
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/financeflow
       - JWT_SECRET=change_me_in_prod
-      - GEMINI_API_KEY=AIzaSyA0kJFYznnSGmHijZWVVjeuqmzGeZtm8fU
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
       - MONGODB_URL=mongodb://mongo:27017
       - MONGODB_DB_NAME=financeflow_logs
     depends_on:
