@@ -13,12 +13,16 @@ export async function apiRequest(
   url: string,
   data?: unknown | undefined,
 ): Promise<Response> {
+  const headers: Record<string, string> = {
+    ...authService.getAuthHeaders(),
+  };
+  if (data) {
+    headers["Content-Type"] = "application/json";
+  }
+
   const res = await fetch(url, {
     method,
-    headers: {
-      ...(data ? { "Content-Type": "application/json" } : {}),
-      ...authService.getAuthHeaders(),
-    },
+    headers,
     body: data ? JSON.stringify(data) : undefined,
     credentials: "include",
   });
@@ -50,13 +54,25 @@ export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       queryFn: getQueryFn({ on401: "throw" }),
-      refetchInterval: false,
-      refetchOnWindowFocus: false,
-      staleTime: Infinity,
-      retry: false,
+      refetchInterval: false, // Disable auto-refetch to improve performance
+      refetchOnWindowFocus: true, // Enable refetch on focus for better sync
+      refetchOnMount: true, // Refetch on mount for fresh data
+      refetchOnReconnect: true, // Refetch when reconnecting
+      staleTime: 30 * 1000, // 30 seconds - more aggressive refresh
+      gcTime: 5 * 60 * 1000, // 5 minutes garbage collection
+      retry: (failureCount, error: any) => {
+        // Don't retry on 401/403 errors
+        if (error?.status === 401 || error?.status === 403) {
+          return false;
+        }
+        // Retry up to 3 times for other errors
+        return failureCount < 3;
+      },
+      retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 10000),
     },
     mutations: {
-      retry: false,
+      retry: 2,
+      retryDelay: 1000,
     },
   },
 });

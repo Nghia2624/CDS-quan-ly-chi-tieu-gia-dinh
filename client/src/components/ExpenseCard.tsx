@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, DollarSign } from "lucide-react";
+import { Calendar, DollarSign, Sparkles, User } from "lucide-react";
 
 interface ExpenseCardProps {
   description: string;
@@ -8,9 +8,10 @@ interface ExpenseCardProps {
   category: string;
   date: string;
   user?: string;
+  aiConfidence?: number;
 }
 
-export function ExpenseCard({ description, amount, category, date, user }: ExpenseCardProps) {
+export function ExpenseCard({ description, amount, category, date, user, aiConfidence }: ExpenseCardProps) {
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('vi-VN', {
       style: 'currency',
@@ -24,6 +25,18 @@ export function ExpenseCard({ description, amount, category, date, user }: Expen
       month: '2-digit',
       year: 'numeric'
     });
+  };
+
+  const getConfidenceColor = (confidence: number) => {
+    if (confidence >= 0.8) return 'text-green-600';
+    if (confidence >= 0.6) return 'text-yellow-600';
+    return 'text-red-600';
+  };
+
+  const getConfidenceText = (confidence: number) => {
+    if (confidence >= 0.8) return 'Cao';
+    if (confidence >= 0.6) return 'Trung bình';
+    return 'Thấp';
   };
 
   return (
@@ -42,16 +55,27 @@ export function ExpenseCard({ description, amount, category, date, user }: Expen
               </div>
               
               {user && (
-                <span className="text-xs text-muted-foreground" data-testid="text-expense-user">
-                  bởi {user}
-                </span>
+                <div className="flex items-center gap-1">
+                  <User className="h-3 w-3" />
+                  <span data-testid="text-expense-user">{user}</span>
+                </div>
               )}
             </div>
 
             <div className="flex items-center justify-between">
-              <Badge variant="secondary" className="text-xs" data-testid="badge-expense-category">
-                {category}
-              </Badge>
+              <div className="flex items-center gap-2">
+                <Badge variant="secondary" className="text-xs" data-testid="badge-expense-category">
+                  {category}
+                </Badge>
+                {aiConfidence && (
+                  <div className="flex items-center gap-1">
+                    <Sparkles className="h-3 w-3 text-blue-500" />
+                    <span className={`text-xs font-medium ${getConfidenceColor(aiConfidence)}`}>
+                      AI: {getConfidenceText(aiConfidence)}
+                    </span>
+                  </div>
+                )}
+              </div>
               
               <div className="flex items-center gap-1 text-right">
                 <DollarSign className="h-3 w-3 text-muted-foreground" />

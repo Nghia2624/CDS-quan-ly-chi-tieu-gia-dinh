@@ -1,0 +1,73 @@
+services:
+  app:
+    build: .
+    container_name: financeflow-app
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/financeflow
+      - JWT_SECRET=change_me_in_prod
+      - GEMINI_API_KEY=AIzaSyAEKaLFrnUbHQ8jbGu23jk5hGop2UJMQbw
+      - MONGODB_URL=mongodb://mongo:27017
+      - MONGODB_DB_NAME=financeflow_logs
+      - CORS_ORIGIN=http://localhost:5000
+    depends_on:
+      db:
+        condition: service_healthy
+      mongo:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "node", "server/health-check.js"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+
+  db:
+    image: postgres:16
+    container_name: financeflow-db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=financeflow
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d financeflow"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  mongo:
+    image: mongodb/mongodb-community-server:7.0-ubi8
+    container_name: financeflow-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodata:/data/db
+    restart: unless-stopped
+
+  migrate:
+    build: .
+    container_name: financeflow-migrate
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/financeflow
+      - NODE_ENV=production
+    depends_on:
+      - db
+    command: /bin/sh -c "node server/wait-for-db.js && node server/create-extension.js && npx drizzle-kit push && npm run seed"
+    restart: "no"
+    profiles:
+      - migrate
+
+volumes:
+  pgdata:
+  mongodata:
+
+
